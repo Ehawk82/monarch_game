@@ -3,13 +3,25 @@ html, body {
 	margin: 0;
 	background: black;
 }
-
+body {
+	display: flex;
+}
 /*ID*/
+
 
 /*CLASS*/
 .frames {
 
-	
+}
+.btnFrame,.mainFrame,.navFrame {
+	flex-direction: column;
+	height: 100vh;
+}
+.btnFrame,.navFrame {
+	flex: 2;
+}
+.mainFrame {
+	flex: 8;
 }
 
 /*MULTI*/

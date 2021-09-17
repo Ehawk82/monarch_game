@@ -1,12 +1,12 @@
 const myTabs = ["Milkweed","Larva","Caterpillar","Monarchs","Flutter","Kaleidoscope"];
 
-var playerlevel = 4;
-
 var userData = {
-	milkweed: 10,
-	larva: 0,
-	caterpillar: 0,
-	monarchs: 0,
-	flutter: 0,
-	kaleidoscope: 0
+	milkweed: {cost:1,amount:0},
+	larva: {cost:10,amount:0},
+	caterpillar: {cost:100,amount:0},
+	monarchs: {cost:1000,amount:0},
+	flutter: {cost:10000,amount:0},
+	kaleidoscope: {cost:100000,amount:0},
+	energy: 1,
+	playerlevel: 2
 };

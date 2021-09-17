@@ -1,70 +1,78 @@
 var init = () => {
-	LSinit("user_data",userData);
-	const tabs = createEle("header"),
-	      main = createEle("div"),
-	      nav = createEle("nav");
 	var ud = parseLS("user_data");
-	//
-	for (var i = 0; i < myTabs.length; i++) {
-		const myBtns = createEle("button");
-		myBtns.setAttribute("data-index",i);
-		myBtns.className = "w3-button";
-		if(i <= playerlevel) {
-			myBtns.disabled = false;
-			myBtns.onclick = btnClicked(myBtns,ud);
-			myBtns.className = "w3-button";
-		} else {
-			myBtns.disabled = true;
-			myBtns.className = "w3-button w3-hide";
-		}
-
-		myBtns.innerHTML = myTabs[i];
-
-		tabs.append(myBtns);
+	if(!ud || ud === null) {
+		LSinit("user_data",userData);
+		ud = parseLS("user_data");
+		build(ud);
+	} else {
+		build(ud);
 	}
-
-	tabs.className = "w3-header w3-large w3-grey w3-card-2 w3-padding";
-
-	for (var k = 0; k < myTabs.length; k++) {
-		var dI_dressed = myTabs[k].toLowerCase();
-
-		var dI_call = ud[dI_dressed];
-
-		const frames = createEle("div");
-		frames.setAttribute("data-index", k);
-		frames.innerHTML = myTabs[k] + ": " + dI_call;
-		frames.className = "frames w3-container w3-padding-16 w3-card-2";
-		if (k <= playerlevel) {
-			frames.disabled = false;
-		} else {
-			frames.disabled = true;
-			frames.className = "w3-container w3-hide";
-
-		}
-
-		main.append(frames);
-	}
-	main.className = "w3-white w3-display-middle w3-margin";
-
-	nav.innerHTML = "nav";
-	nav.className = "w3-grey w3-bottom w3-center w3-card-2 w3-padding";
-
-	body.append(tabs,main,nav);
 },
-btnClicked = (myBtns,ud) => {
-	return () => {
-		const dI = myBtns.getAttribute("data-index")
-		      dI_dressed = myTabs[dI].toLowerCase(),
-		      dI_call = ud[dI_dressed],
-		      frames = bySelAll(".frames");
-        
-		dI_call++;
-        ud[dI_dressed] = dI_call;
-		saveLS("user_data",ud);
-		frames[dI].innerHTML = myTabs[dI] + ": " + dI_call;
-	}
-};
+build = (ud) => {
+	const btnFrame = createEle("div"),
+			energyFrame = createEle("div"),
+	      mainFrame = createEle("div"),
+	      navFrame = createEle("div");
 
+    for (var i = 0; i < myTabs.length; i++) {
+    	const btns = createEle("button");
+	
+		btns.innerHTML = myTabs[i].toUpperCase();
+		btns.className = "btns w3-button w3-block";
+		btns.setAttribute("data-index",i);
+		btns.onclick = btnClicked(ud,btns);
+
+		btnFrame.append(btns);
+    }
+
+	btnFrame.className = "btnFrame w3-monarch w3-center";
+
+	energyFrame.innerHTML = "ENERGY: " + ud.energy;
+	energyFrame.className = "w3-monarch w3-right-align";
+
+	mainFrame.append(energyFrame);
+	mainFrame.className = "mainFrame w3-black w3-center";
+
+	navFrame.innerHTML = "navFrame";
+	navFrame.className = "navFrame w3-monarch w3-center";
+
+	body.append(btnFrame,mainFrame,navFrame);
+	verifyBtns(ud);
+	timer();
+},
+timer = () => {
+	var ticker = () => {
+		setTimeout(() => {
+			const ud = parseLS("user_data");
+			console.log(ud.energy);
+			ticker();
+		},1000);
+	};
+	//ticker();
+},
+btnClicked = (ud,btns) => {
+	return () => {
+		var btns_dressed = btns.innerHTML.toLowerCase(),
+   	    ud_call_cost = ud[btns_dressed].cost;
+      ud[btns_dressed].cost++;
+      ud.energy = ud.energy - ud_call_cost;
+   	saveLS("user_data",ud);
+   	verifyBtns(ud);
+	}
+},
+verifyBtns = (ud) => {
+   var btns = bySelAll(".btns");
+
+   for (var k = 0; k < btns.length; k++) {
+   	var btns_dressed = btns[k].innerHTML.toLowerCase(),
+   	    ud_call_cost = ud[btns_dressed].cost;
+   		if(k <= ud.playerlevel && ud_call_cost <= ud.energy) {
+   			btns[k].disabled = false;
+   		} else {
+   			btns[k].disabled = true;
+   		}
+   }
+};
 window.onload = () => {
 	init();
 };
