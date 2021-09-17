@@ -28,7 +28,7 @@ build = (ud) => {
 	btnFrame.className = "btnFrame w3-monarch w3-center";
 
 	energyFrame.innerHTML = "ENERGY: " + ud.energy;
-	energyFrame.className = "w3-monarch w3-right-align";
+	energyFrame.className = "energyFrame w3-monarch w3-right-align";
 
 	mainFrame.append(energyFrame);
 	mainFrame.className = "mainFrame w3-black w3-center";
@@ -44,20 +44,30 @@ timer = () => {
 	var ticker = () => {
 		setTimeout(() => {
 			const ud = parseLS("user_data");
-			console.log(ud.energy);
+
+			ud.energy = ud.energy + ud.milkweed.amount;
+			saveLS("user_data",ud)
+			verifyEnergy(ud);
+			verifyBtns(ud);
 			ticker();
 		},1000);
 	};
-	//ticker();
+	ticker();
+},
+verifyEnergy = (ud) => {
+	const energyFrame = bySel(".energyFrame");
+	energyFrame.innerHTML = "ENERGY: " + ud.energy;
 },
 btnClicked = (ud,btns) => {
 	return () => {
 		var btns_dressed = btns.innerHTML.toLowerCase(),
    	    ud_call_cost = ud[btns_dressed].cost;
       ud[btns_dressed].cost++;
+      ud[btns_dressed].amount++;
       ud.energy = ud.energy - ud_call_cost;
    	saveLS("user_data",ud);
    	verifyBtns(ud);
+   	verifyEnergy(ud);
 	}
 },
 verifyBtns = (ud) => {
